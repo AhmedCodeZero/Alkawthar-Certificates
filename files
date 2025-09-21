@@ -1,0 +1,141 @@
+// app/page.tsx
+import React from 'react';
+import { Input, Button } from 'antd';
+
+const HomePage = () => {
+  const [studentId, setStudentId] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+
+  const onLookup = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    // Lookup logic here
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      <div className="mx-auto mb-10 max-w-3xl text-center px-2">
+        <h1 className="bg-gradient-to-r from-emerald-200 via-teal-200 to-emerald-200 bg-clip-text text-transparent text-3xl md:text-4xl font-semibold leading-tight tracking-tight">
+          {"جمعية الكوثر الصحية تهنئكم على تخرجكم من كلية الطب"}
+        </h1>
+        <p className="mt-4 text-base md:text-lg text-emerald-100/80">
+          {"لتحميل التهنئة أدخل رقمك الجامعي"}
+        </p>
+      </div>
+      <form onSubmit={onLookup} className="mx-auto max-w-2xl">
+        <div className="flex items-center gap-2">
+          <Input
+            value={studentId}
+            onChange={(e) => setStudentId(e.target.value)}
+            placeholder={"أدخل رقمك الجامعي"}
+            className="h-12 flex-1 rounded-full bg-white/5 text-emerald-50 placeholder:text-emerald-100/50 border-0 ring-1 ring-white/10 focus-visible:ring-2 focus-visible:ring-emerald-500/60 focus-visible:border-transparent px-5 text-right"
+            inputMode="numeric"
+            aria-label={"الرقم الجامعي"}
+          />
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-12 rounded-full bg-emerald-600 hover:bg-emerald-500 px-6 shadow-lg shadow-emerald-600/10 hover:shadow-emerald-500/20 transition-shadow"
+          >
+            {loading ? (
+              <span className="inline-flex items-center gap-2">
+                <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+                </svg>
+                {"بحث..."}
+              </span>
+            ) : (
+              "بحث"
+            )}
+          </Button>
+        </div>
+      </form>
+      {/* rest of code here */}
+    </div>
+  );
+};
+
+export default HomePage;
+
+// components/certificate-lookup.tsx
+import React from 'react';
+import { Input, Button } from 'antd';
+
+const CertificateLookup = ({ onLookup, studentId, setStudentId, loading }) => {
+  return (
+    <form onSubmit={onLookup} className="mx-auto max-w-2xl">
+      <div className="flex items-center gap-2">
+        <Input
+          value={studentId}
+          onChange={(e) => setStudentId(e.target.value)}
+          placeholder={"أدخل رقمك الجامعي"}
+          className="h-12 flex-1 rounded-full bg-white/5 text-emerald-50 placeholder:text-emerald-100/50 border-0 ring-1 ring-white/10 focus-visible:ring-2 focus-visible:ring-emerald-500/60 focus-visible:border-transparent px-5 text-right"
+          inputMode="numeric"
+          aria-label={"الرقم الجامعي"}
+        />
+        <Button
+          type="submit"
+          disabled={loading}
+          className="h-12 rounded-full bg-emerald-600 hover:bg-emerald-500 px-6 shadow-lg shadow-emerald-600/10 hover:shadow-emerald-500/20 transition-shadow"
+        >
+          {loading ? (
+            <span className="inline-flex items-center gap-2">
+              <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
+              </svg>
+              {"بحث..."}
+            </span>
+          ) : (
+            "بحث"
+          )}
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+export default CertificateLookup;
+
+// components/ambient-background.tsx
+import React from 'react';
+
+const AmbientBackground = () => {
+  return (
+    <div className="relative">
+      <div
+        className="absolute inset-0 opacity-[0.25] mix-blend-multiply"
+        style={{
+          background:
+            "radial-gradient(1200px 800px at 50% 40%, rgba(0,0,0,0) 0%, rgba(0,0,0,0.35) 70%)",
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-500 to-gray-800">
+        {/* Subtle scanline/noise */}
+      </div>
+    </div>
+  );
+};
+
+export default AmbientBackground;
+
+// components/social-icons.tsx
+import React from 'react';
+
+const SocialIcons = () => {
+  return (
+    <div>
+      <a
+        href="#"
+        className="group relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full text-emerald-100 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+      >
+        {/* Icon here */}
+      </a>
+      {/* rest of code here */}
+    </div>
+  );
+};
+
+export default SocialIcons;
