@@ -181,21 +181,7 @@ export const Certificates = {
 
       if (error) {
         console.error('Error upserting certificate to Supabase:', error)
-        // Fallback to localStorage with error handling
-        try {
-          const all = read()
-          const idx = all.findIndex((r) => r.id === record.id)
-          if (idx >= 0) {
-            all[idx] = record
-          } else {
-            all.push(record)
-          }
-          write(all)
-        } catch (localStorageError) {
-          console.error('Error writing to localStorage:', localStorageError)
-          throw new Error('Failed to save certificate: localStorage quota exceeded')
-        }
-        return
+        throw new Error(`Failed to save certificate: ${error.message}`)
       }
 
       // Also update localStorage as backup (with error handling)
@@ -214,20 +200,7 @@ export const Certificates = {
       }
     } catch (error) {
       console.error('Error connecting to Supabase:', error)
-      // Fallback to localStorage with error handling
-      try {
-        const all = read()
-        const idx = all.findIndex((r) => r.id === record.id)
-        if (idx >= 0) {
-          all[idx] = record
-        } else {
-          all.push(record)
-        }
-        write(all)
-      } catch (localStorageError) {
-        console.error('Error writing to localStorage:', localStorageError)
-        throw new Error('Failed to save certificate: localStorage quota exceeded')
-      }
+      throw new Error(`Failed to save certificate: ${error}`)
     }
   },
 

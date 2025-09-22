@@ -1,11 +1,8 @@
 import type { Metadata } from "next"
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
 import CertificateLookup from "@/components/certificate-lookup"
 import AmbientBackground from "@/components/ambient-background"
 import SocialIcons from "@/components/social-icons"
 import HeroLogo from "@/components/hero-logo"
-import DebugInfo from "@/components/debug-info"
 
 export const metadata: Metadata = {
   title: "تحميل التهنئة - جمعية الكوثر الصحية",
@@ -18,16 +15,8 @@ export default function Page() {
       <AmbientBackground />
 
       <div className="relative z-10 mx-auto flex min-h-screen max-w-5xl flex-col items-center justify-between px-4 py-8 sm:py-10 md:py-16 lg:py-20">
-        <header className="flex w-full items-center justify-between">
+        <header className="flex w-full items-center justify-center">
           <div className="text-sm text-gray-400">{"جمعية الكوثر الصحية"}</div>
-          <Link
-            href="/admin"
-            className="inline-flex items-center gap-2 text-xs text-gray-400 underline-offset-4 hover:text-white hover:underline transition-colors"
-            aria-label={"تسجيل الدخول لإدارة الشهادات"}
-          >
-            {"تسجيل الدخول"}
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
         </header>
 
         <section className="mt-8 md:mt-12 w-full">
@@ -59,8 +48,6 @@ export default function Page() {
           <SocialIcons />
         </footer>
       </div>
-      
-      <DebugInfo />
     </main>
   )
 }

@@ -79,9 +79,10 @@ export const Settings = {
             ignoreDuplicates: false
           })
 
-        if (error) {
-          console.error(`Error updating setting ${key}:`, error)
-        }
+      if (error) {
+        console.error(`Error updating setting ${key}:`, error)
+        throw new Error(`Failed to update setting ${key}: ${error.message}`)
+      }
       })
 
       await Promise.all(promises)

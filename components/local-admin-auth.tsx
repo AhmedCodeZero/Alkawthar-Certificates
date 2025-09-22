@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { useToast } from "@/hooks/use-toast"
 import { LocalAuth } from "@/lib/local-auth"
-import { Loader2, Lock, User, Mail, Eye, EyeOff, CheckCircle, XCircle, Wifi, WifiOff } from "lucide-react"
+import { Loader2, Lock, User, Mail, Eye, EyeOff, XCircle, Wifi, WifiOff } from "lucide-react"
 
 interface LocalAdminAuthProps {
   children: React.ReactNode
@@ -254,35 +254,6 @@ export default function LocalAdminAuth({ children }: LocalAdminAuthProps) {
               </Button>
             </form>
             
-            {/* معلومات تسجيل الدخول */}
-            <div className="mt-6 p-4 bg-gray-800/50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-300 mb-3 flex items-center">
-                <CheckCircle className="h-4 w-4 mr-2 text-green-500" />
-                حسابات الاختبار:
-              </h4>
-              <div className="space-y-2 text-xs text-gray-400">
-                <div className="flex items-center justify-between">
-                  <span>admin@alkawthar.org.sa</span>
-                  <span className="text-green-400">admin123</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>qeahmedalkawthar@gmail.com</span>
-                  <span className="text-green-400">qe203582</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>dg@alkawthar.org.sa</span>
-                  <span className="text-green-400">dg206582</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Dm@alkawthar.org.sa</span>
-                  <span className="text-green-400">dm206582</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>test@example.com</span>
-                  <span className="text-green-400">test123</span>
-                </div>
-              </div>
-            </div>
 
             {/* معلومات التصحيح */}
             {loginAttempts > 0 && (
@@ -297,16 +268,6 @@ export default function LocalAdminAuth({ children }: LocalAdminAuthProps) {
               </div>
             )}
 
-            {/* معلومات النظام */}
-            <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-lg">
-              <div className="flex items-center text-blue-400 text-xs">
-                <WifiOff className="h-4 w-4 mr-2" />
-                النظام المحلي
-              </div>
-              <p className="text-xs text-blue-300 mt-1">
-                يعمل بدون اتصال بـ Supabase - البيانات محفوظة محلياً
-              </p>
-            </div>
           </CardContent>
         </Card>
       </div>

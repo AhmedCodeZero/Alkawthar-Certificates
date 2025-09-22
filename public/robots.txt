@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# منع الوصول لصفحة الإدارة
+Disallow: /admin
+Disallow: /admin/
+
+# منع الوصول لملفات API
+Disallow: /api/
+
+# منع الوصول لملفات النظام
+Disallow: /_next/
+Disallow: /middleware
+
+# إخفاء معلومات إضافية
+Disallow: /.env
+Disallow: /package.json
+Disallow: /tsconfig.json

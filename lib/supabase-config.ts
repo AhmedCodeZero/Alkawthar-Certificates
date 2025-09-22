@@ -2,8 +2,8 @@
 // قم بتحديث هذه القيم من Supabase Dashboard
 
 export const supabaseConfig = {
-  url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co',
-  anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key-here'
+  url: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://gdcpzppiafhhzdxchxid.supabase.co',
+  anonKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkY3B6cHBpYWZoaHpkeGNoeGlkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NTA5MzIsImV4cCI6MjA3NDAyNjkzMn0.QlYO5hfM_09qVOGcntFE3_4aC7P-jj6qARH58OEbUd0'
 }
 
 // التحقق من صحة الإعدادات

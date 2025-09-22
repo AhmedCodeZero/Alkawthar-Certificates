@@ -118,17 +118,14 @@ export const Logo = {
 
       if (error) {
         console.error('Error saving logo:', error)
-        // Fallback to localStorage
-        write(asset)
-        return
+        throw new Error(`Failed to save logo: ${error.message}`)
       }
 
       // Also update localStorage as backup
       write(asset)
     } catch (error) {
       console.error('Error connecting to Supabase:', error)
-      // Fallback to localStorage
-      write(asset)
+      throw new Error(`Failed to save logo: ${error}`)
     }
   },
 
