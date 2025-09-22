@@ -5,6 +5,7 @@ import CertificateLookup from "@/components/certificate-lookup"
 import AmbientBackground from "@/components/ambient-background"
 import SocialIcons from "@/components/social-icons"
 import HeroLogo from "@/components/hero-logo"
+import DebugInfo from "@/components/debug-info"
 
 export const metadata: Metadata = {
   title: "تحميل التهنئة - جمعية الكوثر الصحية",
@@ -58,6 +59,8 @@ export default function Page() {
           <SocialIcons />
         </footer>
       </div>
+      
+      <DebugInfo />
     </main>
   )
 }

@@ -93,11 +93,22 @@ export default function CertificateLookup() {
         })
       }
     } catch (error) {
-      toast({
-        title: "حدث خطأ أثناء البحث",
-        description: "يرجى المحاولة مرة أخرى أو التواصل مع الدعم الفني.",
-        variant: "destructive",
-      })
+      console.error('Search error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'خطأ غير معروف'
+      
+      if (errorMessage.includes('Supabase not configured')) {
+        toast({
+          title: "إعدادات قاعدة البيانات غير مكتملة",
+          description: "يرجى إنشاء ملف .env.local مع إعدادات Supabase الصحيحة.",
+          variant: "destructive",
+        })
+      } else {
+        toast({
+          title: "حدث خطأ أثناء البحث",
+          description: "يرجى المحاولة مرة أخرى أو التواصل مع الدعم الفني.",
+          variant: "destructive",
+        })
+      }
     } finally {
       setLoading(false)
     }
