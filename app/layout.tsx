@@ -16,6 +16,34 @@ export const metadata: Metadata = {
   title: "جمعية الكوثر الصحية",
   description: "منصة شهادات التهنئة للخريجين",
   generator: "v0.dev",
+  icons: {
+    icon: "/placeholder-logo.svg",
+    shortcut: "/placeholder-logo.svg",
+    apple: "/placeholder-logo.svg",
+  },
+  openGraph: {
+    title: "جمعية الكوثر الصحية",
+    description: "منصة شهادات التهنئة للخريجين",
+    images: [
+      {
+        url: "/OG.png",
+        width: 1200,
+        height: 630,
+        alt: "جمعية الكوثر الصحية - تهنئة الخريجين",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [
+      {
+        url: "/OG.png",
+        width: 1200,
+        height: 630,
+        alt: "جمعية الكوثر الصحية - تهنئة الخريجين",
+      },
+    ],
+  },
 }
 
 export default function RootLayout({
@@ -27,6 +55,7 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" className={cn(GeistSans.variable, GeistMono.variable)}>
       <head>
         <meta name="theme-color" content="#0a1410" />
+        <link rel="icon" href="/placeholder-logo.svg" />
       </head>
       <body
         className={cn(
