@@ -28,7 +28,6 @@ export default function Page() {
             <h1 className="text-2xl font-medium leading-relaxed text-white md:text-3xl mb-4">
               {"جمعية الكوثر الصحية تهنئكم على تخرجكم من كلية الطب"}
             </h1>
-            <p className="text-sm text-gray-400 md:text-base">{"لتحميل التهنئة أدخل رقمك الجامعي"}</p>
           </div>
 
           {/* Main search area with glow effect */}

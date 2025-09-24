@@ -482,7 +482,7 @@ export default function AdminPageClient() {
         mimeType: logoFile.type || "image/png",
         uploadedAt: Date.now(),
       }
-      await Logo.set(asset)
+      await Logo.set(asset, logoHeight)
       setLogo(asset)
       setLogoFile(null)
       ;(document.getElementById("logo-input") as HTMLInputElement | null)?.value &&

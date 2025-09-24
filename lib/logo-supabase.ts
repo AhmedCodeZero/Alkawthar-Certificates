@@ -103,11 +103,11 @@ export const Logo = {
     }
   },
 
-  async set(asset: LogoAsset): Promise<void> {
+  async set(asset: LogoAsset, heightPx?: number): Promise<void> {
     try {
       const supabase = createClient()
-      const currentHeight = this.getHeightPx()
-      const supabaseLogo = convertToSupabase(asset, currentHeight)
+      const logoHeight = heightPx || this.getHeightPx()
+      const supabaseLogo = convertToSupabase(asset, logoHeight)
       
       const { error } = await supabase
         .from('app_logo')

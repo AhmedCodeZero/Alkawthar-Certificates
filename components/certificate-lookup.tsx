@@ -11,46 +11,30 @@ import {
   Download,
   FileText,
   Search,
-  WheatIcon as WhatsApp,
   XCircle,
   AlertCircle,
   RotateCcw,
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Certificates, type CertificateRecord } from "@/lib/certificates-supabase"
-import { Settings } from "@/lib/settings-supabase"
+// removed Settings import (no longer needed)
 
 export default function CertificateLookup() {
   const { toast } = useToast()
   const [studentId, setStudentId] = useState("")
   const [result, setResult] = useState<CertificateRecord | null>(null)
   const [loading, setLoading] = useState(false)
-  const [showJoin, setShowJoin] = useState(false)
-  const [whatsappUrl, setWhatsappUrl] = useState<string | null>(null)
+  // removed join box state
   const [searchAttempted, setSearchAttempted] = useState(false)
   const [downloaded, setDownloaded] = useState(false)
 
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const s = await Settings.get()
-        setWhatsappUrl(s.whatsappCommunityUrl ?? null)
-      } catch (error) {
-        console.error('Error loading settings:', error)
-        // Fallback to localStorage
-        const s = Settings.get()
-        setWhatsappUrl(s.whatsappCommunityUrl ?? null)
-      }
-    }
-    
-    loadSettings()
-  }, [])
+  // removed settings load effect (join box removed)
 
   async function onLookup(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setResult(null)
-    setShowJoin(false)
+    // removed join box state
     setSearchAttempted(true)
     setDownloaded(false)
 
@@ -123,7 +107,6 @@ export default function CertificateLookup() {
     document.body.appendChild(a)
     a.click()
     a.remove()
-    setShowJoin(true)
     setDownloaded(true)
 
     toast({
@@ -132,10 +115,54 @@ export default function CertificateLookup() {
     })
   }
 
+  function buildPreviewHref(rec: CertificateRecord): string {
+    const hasDataPrefix = rec.dataUrl.startsWith("data:")
+    if (hasDataPrefix) return rec.dataUrl
+    const mime = rec.mimeType || (rec.fileName.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream')
+    return `data:${mime};base64,${rec.dataUrl}`
+  }
+
+  async function handlePreview() {
+    if (!result) return
+    try {
+      let blob: Blob
+      if (result.dataUrl.startsWith("data:")) {
+        const response = await fetch(result.dataUrl)
+        blob = await response.blob()
+      } else {
+        const base64 = result.dataUrl
+        const binaryString = atob(base64)
+        const len = binaryString.length
+        const bytes = new Uint8Array(len)
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i)
+        }
+        const mime = result.mimeType || (result.fileName.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream')
+        blob = new Blob([bytes], { type: mime })
+      }
+
+      const objectUrl = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = objectUrl
+      a.target = "_blank"
+      a.rel = "noopener"
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 10000)
+    } catch (error) {
+      console.error('Preview error:', error)
+      toast({
+        title: "تعذر فتح المعاينة",
+        description: "قد يكون المتصفح منع فتح التبويب. حاول السماح بالنوافذ المنبثقة أو حمّل الملف مباشرة.",
+        variant: "destructive",
+      })
+    }
+  }
+
   function handleNewSearch() {
     setStudentId("")
     setResult(null)
-    setShowJoin(false)
     setSearchAttempted(false)
     setDownloaded(false)
   }
@@ -183,16 +210,15 @@ export default function CertificateLookup() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <a
-                  href={result.dataUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Button
+                  onClick={handlePreview}
+                  variant="outline"
                   className="inline-flex items-center gap-2 rounded-xl bg-white/10 border border-white/20 px-4 py-2 text-sm text-white transition hover:bg-white/20 backdrop-blur-sm"
                   aria-label="معاينة الشهادة في تبويب جديد"
                 >
                   <FileText className="h-4 w-4" />
                   {"معاينة"}
-                </a>
+                </Button>
                 <Button
                   onClick={handleDownload}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white rounded-xl shadow-lg"
@@ -215,8 +241,6 @@ export default function CertificateLookup() {
               </div>
               <div className="space-y-2 text-sm text-white/80">
                 <p>• تأكد من صحة الرقم الجامعي المدخل</p>
-                <p>• تواصل مع إدارة الجمعية إذا كان الرقم صحيحاً</p>
-                <p>• تأكد من أن الشهادة تم رفعها من قبل الإدارة</p>
               </div>
               <Button
                 onClick={handleNewSearch}
@@ -243,7 +267,19 @@ export default function CertificateLookup() {
                   <CheckCircle2 className="h-5 w-5 text-emerald-400" />
                   <span className="text-white font-semibold">✅ تم تحميل الشهادة بنجاح!</span>
                 </div>
-                <p className="text-white/80 text-sm">هل تريد البحث عن شهادة أخرى؟</p>
+                {/* removed question line per request */}
+                <p className="text-white/90 text-sm leading-relaxed">
+                  وندعوكِ للانضمام إلى مجتمع الكوثر الصحي على واتساب عبر الرابط:
+                  <br />
+                  <a
+                    href="https://whatsapp.com/channel/0029VaRCQdf4Y9levx4GbE1d"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-green-300 underline hover:text-green-200"
+                  >
+                    https://whatsapp.com/channel/0029VaRCQdf4Y9levx4GbE1d
+                  </a>
+                </p>
                 <Button
                   onClick={handleNewSearch}
                   className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white rounded-xl"
@@ -256,33 +292,7 @@ export default function CertificateLookup() {
           </Card>
         )}
 
-        {showJoin && whatsappUrl && (
-          <div className="mx-auto max-w-2xl rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-400/30 p-6 text-center text-white backdrop-blur-sm shadow-2xl animate-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-3">
-                <WhatsApp className="h-6 w-6 text-green-400" />
-                <h3 className="text-lg font-bold">🤝 انضم إلى مجتمع الخريجين!</h3>
-              </div>
-              <div className="space-y-2">
-                <p className="text-white/90 font-medium">🎉 مبروك على التخرج من كلية الطب!</p>
-                <p className="text-white/80 text-sm leading-relaxed">
-                  انضم إلى مجتمع «الكوثر الصحي» على واتساب للتواصل مع زملائك الخريجين وتبادل الخبرات المهنية في المجال
-                  الطبي
-                </p>
-              </div>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 px-6 py-3 text-white font-semibold transition-all duration-300 shadow-lg"
-                aria-label="الانضمام إلى مجتمع الكوثر الصحي على واتساب"
-              >
-                <WhatsApp className="h-5 w-5" />
-                {"انضم الآن إلى المجتمع"}
-              </a>
-            </div>
-          </div>
-        )}
+        {/* removed graduates community invitation box per request */}
       </div>
     </div>
   )

@@ -16,6 +16,11 @@ export function middleware(request: NextRequest) {
   
   // التحقق من المسارات المحمية
   if (protectedPaths.some(path => pathname.startsWith(path))) {
+    // في بيئة التطوير، السماح بالوصول
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.next()
+    }
+    
     // في بيئة الإنتاج، يمكن إضافة فحص IP
     if (process.env.NODE_ENV === 'production') {
       const clientIP = request.ip || 

@@ -47,12 +47,10 @@ export const Settings = {
         return read()
       }
 
-      // Convert database records to settings object
+      // Convert database records to settings object (accept any known keys)
       const settings: AppSettings = {}
       data.forEach((setting: AppSetting) => {
-        if (setting.key in settings) {
-          (settings as any)[setting.key] = setting.value
-        }
+        ;(settings as any)[setting.key] = setting.value
       })
 
       return settings
@@ -87,14 +85,18 @@ export const Settings = {
 
       await Promise.all(promises)
 
-      // Also update localStorage as backup
+      // Also update localStorage as backup and notify listeners in the same tab
       const current = read()
-      write({ ...current, ...partial })
+      const next = { ...current, ...partial }
+      write(next)
+      Settings.notifyUpdate()
     } catch (error) {
       console.error('Error connecting to Supabase:', error)
       // Fallback to localStorage
       const current = read()
-      write({ ...current, ...partial })
+      const next = { ...current, ...partial }
+      write(next)
+      Settings.notifyUpdate()
     }
   },
 
