@@ -98,21 +98,82 @@ export default function CertificateLookup() {
     }
   }
 
-  function handleDownload() {
+  async function handleDownload() {
     if (!result) return
-    const a = document.createElement("a")
-    a.href = result.dataUrl
-    const ext = result.mimeType.includes("pdf") ? "pdf" : result.fileName.split(".").pop() || "bin"
-    a.download = `akawthar-${result.id}.${ext}`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    setDownloaded(true)
-
-    toast({
-      title: "تم تحميل الشهادة بنجاح! 🎊",
-      description: "مبروك على التخرج! نتمنى لك مستقبلاً مشرقاً.",
-    })
+    
+    try {
+      // Check if we're on iOS Safari
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+      
+      if (isIOS && isSafari) {
+        // iOS Safari doesn't support programmatic downloads well
+        // Use blob URL approach which works better on iOS
+        let blob: Blob
+        
+        if (result.dataUrl.startsWith("data:")) {
+          const response = await fetch(result.dataUrl)
+          blob = await response.blob()
+        } else {
+          // Handle base64 data
+          const base64 = result.dataUrl
+          const binaryString = atob(base64)
+          const len = binaryString.length
+          const bytes = new Uint8Array(len)
+          for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i)
+          }
+          const mime = result.mimeType || (result.fileName.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream')
+          blob = new Blob([bytes], { type: mime })
+        }
+        
+        const objectUrl = URL.createObjectURL(blob)
+        const link = document.createElement("a")
+        link.href = objectUrl
+        link.download = `akawthar-${result.id}.${result.mimeType.includes("pdf") ? "pdf" : result.fileName.split(".").pop() || "bin"}`
+        
+        // Add to DOM temporarily for iOS Safari
+        link.style.display = 'none'
+        document.body.appendChild(link)
+        
+        // Trigger download
+        link.click()
+        
+        // Clean up
+        setTimeout(() => {
+          document.body.removeChild(link)
+          URL.revokeObjectURL(objectUrl)
+        }, 1000)
+        
+        toast({
+          title: "تم تحميل الشهادة بنجاح! 🎊",
+          description: "مبروك على التخرج! نتمنى لك مستقبلاً مشرقاً.",
+        })
+      } else {
+        // Standard approach for other browsers
+        const a = document.createElement("a")
+        a.href = result.dataUrl
+        const ext = result.mimeType.includes("pdf") ? "pdf" : result.fileName.split(".").pop() || "bin"
+        a.download = `akawthar-${result.id}.${ext}`
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+        
+        toast({
+          title: "تم تحميل الشهادة بنجاح! 🎊",
+          description: "مبروك على التخرج! نتمنى لك مستقبلاً مشرقاً.",
+        })
+      }
+      
+      setDownloaded(true)
+    } catch (error) {
+      console.error('Download error:', error)
+      toast({
+        title: "حدث خطأ أثناء التحميل",
+        description: "يرجى المحاولة مرة أخرى أو استخدام معاينة الشهادة.",
+        variant: "destructive",
+      })
+    }
   }
 
   function buildPreviewHref(rec: CertificateRecord): string {
@@ -142,13 +203,34 @@ export default function CertificateLookup() {
       }
 
       const objectUrl = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = objectUrl
-      a.target = "_blank"
-      a.rel = "noopener"
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
+      
+      // Check if we're on iOS Safari for better compatibility
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
+      
+      if (isIOS && isSafari) {
+        // For iOS Safari, try to open in the same tab first
+        window.open(objectUrl, '_blank')
+        // If that fails, show a fallback message
+        setTimeout(() => {
+          if (!document.hasFocus()) {
+            toast({
+              title: "تم فتح المعاينة",
+              description: "إذا لم تفتح الشهادة تلقائياً، اضغط على الرابط في تبويب جديد أو حمّل الملف.",
+            })
+          }
+        }, 1000)
+      } else {
+        // Standard approach for other browsers
+        const a = document.createElement("a")
+        a.href = objectUrl
+        a.target = "_blank"
+        a.rel = "noopener"
+        document.body.appendChild(a)
+        a.click()
+        a.remove()
+      }
+      
       setTimeout(() => URL.revokeObjectURL(objectUrl), 10000)
     } catch (error) {
       console.error('Preview error:', error)

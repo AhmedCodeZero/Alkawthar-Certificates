@@ -35,3 +35,5 @@ users.forEach((user, index) => {
 console.log('ON CONFLICT (email) DO NOTHING;');
 
 
+
+
