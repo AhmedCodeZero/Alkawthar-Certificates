@@ -9,7 +9,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import {
   CheckCircle2,
   Download,
-  FileText,
   Search,
   XCircle,
   AlertCircle,
@@ -73,7 +72,7 @@ export default function CertificateLookup() {
         setResult(rec)
         toast({
           title: "تم العثور على الشهادة بنجاح! 🎉",
-          description: "يمكنك الآن معاينة أو تحميل شهادة التهنئة.",
+          description: "يمكنك الآن تحميل شهادة التهنئة.",
         })
       }
     } catch (error) {
@@ -168,79 +167,14 @@ export default function CertificateLookup() {
       setDownloaded(true)
     } catch (error) {
       console.error('Download error:', error)
-      toast({
-        title: "حدث خطأ أثناء التحميل",
-        description: "يرجى المحاولة مرة أخرى أو استخدام معاينة الشهادة.",
-        variant: "destructive",
-      })
+        toast({
+          title: "حدث خطأ أثناء التحميل",
+          description: "يرجى المحاولة مرة أخرى.",
+          variant: "destructive",
+        })
     }
   }
 
-  function buildPreviewHref(rec: CertificateRecord): string {
-    const hasDataPrefix = rec.dataUrl.startsWith("data:")
-    if (hasDataPrefix) return rec.dataUrl
-    const mime = rec.mimeType || (rec.fileName.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream')
-    return `data:${mime};base64,${rec.dataUrl}`
-  }
-
-  async function handlePreview() {
-    if (!result) return
-    try {
-      let blob: Blob
-      if (result.dataUrl.startsWith("data:")) {
-        const response = await fetch(result.dataUrl)
-        blob = await response.blob()
-      } else {
-        const base64 = result.dataUrl
-        const binaryString = atob(base64)
-        const len = binaryString.length
-        const bytes = new Uint8Array(len)
-        for (let i = 0; i < len; i++) {
-          bytes[i] = binaryString.charCodeAt(i)
-        }
-        const mime = result.mimeType || (result.fileName.toLowerCase().endsWith('.pdf') ? 'application/pdf' : 'application/octet-stream')
-        blob = new Blob([bytes], { type: mime })
-      }
-
-      const objectUrl = URL.createObjectURL(blob)
-      
-      // Check if we're on iOS Safari for better compatibility
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
-      const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)
-      
-      if (isIOS && isSafari) {
-        // For iOS Safari, try to open in the same tab first
-        window.open(objectUrl, '_blank')
-        // If that fails, show a fallback message
-        setTimeout(() => {
-          if (!document.hasFocus()) {
-            toast({
-              title: "تم فتح المعاينة",
-              description: "إذا لم تفتح الشهادة تلقائياً، اضغط على الرابط في تبويب جديد أو حمّل الملف.",
-            })
-          }
-        }, 1000)
-      } else {
-        // Standard approach for other browsers
-        const a = document.createElement("a")
-        a.href = objectUrl
-        a.target = "_blank"
-        a.rel = "noopener"
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-      }
-      
-      setTimeout(() => URL.revokeObjectURL(objectUrl), 10000)
-    } catch (error) {
-      console.error('Preview error:', error)
-      toast({
-        title: "تعذر فتح المعاينة",
-        description: "قد يكون المتصفح منع فتح التبويب. حاول السماح بالنوافذ المنبثقة أو حمّل الملف مباشرة.",
-        variant: "destructive",
-      })
-    }
-  }
 
   function handleNewSearch() {
     setStudentId("")
@@ -292,15 +226,6 @@ export default function CertificateLookup() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button
-                  onClick={handlePreview}
-                  variant="outline"
-                  className="inline-flex items-center gap-2 rounded-xl bg-white/10 border border-white/20 px-4 py-2 text-sm text-white transition hover:bg-white/20 backdrop-blur-sm"
-                  aria-label="معاينة الشهادة في تبويب جديد"
-                >
-                  <FileText className="h-4 w-4" />
-                  {"معاينة"}
-                </Button>
                 <Button
                   onClick={handleDownload}
                   className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white rounded-xl shadow-lg"
